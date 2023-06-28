@@ -1,0 +1,150 @@
+from flask import Flask,render_template,jsonify,request
+import config
+from Project_API.utils import RiskAnalytics
+import numpy as np
+
+app = Flask(__name__)
+
+@app.route("/")
+def get_home():
+    # return render_template("index.html")
+    return "Hello Welcome to Bank"
+
+@app.route("/predict_target",methods = ["POST","GET"])
+def get_riskanalytics():
+    if request.method == "POST":
+        data    = request.form 
+        print("User input data is >>>>>>",data)
+        SK_ID_CURR = int(data["SK_ID_CURR"]) 
+        NAME_CONTRACT_TYPE_x = data["NAME_CONTRACT_TYPE_x"]
+        CODE_GENDER = data["CODE_GENDER"]
+        FLAG_OWN_CAR =(data["FLAG_OWN_CAR"]) 
+        FLAG_OWN_REALTY = (data["FLAG_OWN_REALTY"]) 
+        CNT_CHILDREN = int(data["CNT_CHILDREN"]) 
+        AMT_INCOME_TOTAL = data["AMT_INCOME_TOTAL"] 
+        NAME_EDUCATION_TYPE = data["NAME_EDUCATION_TYPE"]
+        NAME_FAMILY_STATUS = data["NAME_FAMILY_STATUS"]
+        REGION_POPULATION_RELATIVE = data["REGION_POPULATION_RELATIVE"]
+        DAYS_EMPLOYED = data["DAYS_EMPLOYED"]
+        DAYS_REGISTRATION = data["DAYS_REGISTRATION"]
+        DAYS_ID_PUBLISH = int(data["DAYS_ID_PUBLISH"])
+        REG_CITY_NOT_LIVE_CITY = int(data["REG_CITY_NOT_LIVE_CITY"])
+        OBS_30_CNT_SOCIAL_CIRCLE = data["OBS_30_CNT_SOCIAL_CIRCLE"]
+        OBS_60_CNT_SOCIAL_CIRCLE = data["OBS_60_CNT_SOCIAL_CIRCLE"]
+        FLAG_DOCUMENT_4 = int(data["FLAG_DOCUMENT_4"])
+        FLAG_DOCUMENT_5 = int(data["FLAG_DOCUMENT_5"])
+        FLAG_DOCUMENT_6 = int(data["FLAG_DOCUMENT_6"])
+        FLAG_DOCUMENT_7 = int(data["FLAG_DOCUMENT_7"])
+        FLAG_DOCUMENT_8 = int(data["FLAG_DOCUMENT_8"])
+        FLAG_DOCUMENT_9 = int(data["FLAG_DOCUMENT_9"])
+        FLAG_DOCUMENT_10 = int(data["FLAG_DOCUMENT_10"])
+        FLAG_DOCUMENT_11 = int(data["FLAG_DOCUMENT_11"])
+        FLAG_DOCUMENT_13 = int(data["FLAG_DOCUMENT_13"])
+        FLAG_DOCUMENT_14 = int(data["FLAG_DOCUMENT_14"])
+        FLAG_DOCUMENT_17 = int(data["FLAG_DOCUMENT_17"])
+        FLAG_DOCUMENT_20 = int(data["FLAG_DOCUMENT_20"])
+        FLAG_DOCUMENT_21 = int(data["FLAG_DOCUMENT_21"])
+        AMT_REQ_CREDIT_BUREAU_QRT = data["AMT_REQ_CREDIT_BUREAU_QRT"]
+        AMT_REQ_CREDIT_BUREAU_YEAR =data["AMT_REQ_CREDIT_BUREAU_YEAR"]
+        AMT_ANNUITY_y = data["AMT_ANNUITY_y"]
+        NAME_CONTRACT_STATUS = data["NAME_CONTRACT_STATUS"]
+        DAYS_DECISION = int(data["DAYS_DECISION"])
+        SELLERPLACE_AREA = data["SELLERPLACE_AREA"] 
+        DAYS_FIRST_DUE = data['DAYS_FIRST_DUE']
+        DAYS_LAST_DUE_1ST_VERSION = data["DAYS_LAST_DUE_1ST_VERSION"]
+        NFLAG_INSURED_ON_APPROVAL = data["NFLAG_INSURED_ON_APPROVAL"]
+
+        NAME_TYPE_SUITE_x = data["NAME_TYPE_SUITE_x"]
+        NAME_INCOME_TYPE_ = data["NAME_INCOME_TYPE_"]
+        NAME_HOUSING_TYPE_ = data["NAME_HOUSING_TYPE_"]
+        ORGANIZATION_TYPE_ = data["ORGANIZATION_TYPE_"]
+        NAME_CONTRACT_TYPE_y_ = data["NAME_CONTRACT_TYPE_y_"]
+        NAME_CASH_LOAN_PURPOSE_ = data["NAME_CASH_LOAN_PURPOSE_"]
+        NAME_PAYMENT_TYPE_ =  data["NAME_PAYMENT_TYPE_"]
+        CODE_REJECT_REASON_ = data["CODE_REJECT_REASON_"]
+        NAME_TYPE_SUITE_y_ =  data["NAME_TYPE_SUITE_y_"]
+        NAME_CLIENT_TYPE_ =  data["NAME_CLIENT_TYPE_"]
+        NAME_GOODS_CATEGORY_ = data["NAME_GOODS_CATEGORY_"]
+        NAME_PORTFOLIO_ =  data["NAME_PORTFOLIO_"]
+        NAME_PRODUCT_TYPE_ = data["NAME_PRODUCT_TYPE_"]
+        CHANNEL_TYPE_  =   data["CHANNEL_TYPE_"]
+        NAME_SELLER_INDUSTRY_ = data["NAME_SELLER_INDUSTRY_"]
+        NAME_YIELD_GROUP_ =  data["NAME_YIELD_GROUP_"]
+        PRODUCT_COMBINATION_ = data["PRODUCT_COMBINATION_"]
+
+        print("*"*10)
+        lg_obj = RiskAnalytics(SK_ID_CURR, NAME_CONTRACT_TYPE_x, CODE_GENDER,
+       FLAG_OWN_CAR, FLAG_OWN_REALTY, CNT_CHILDREN, AMT_INCOME_TOTAL,
+       NAME_EDUCATION_TYPE, NAME_FAMILY_STATUS,REGION_POPULATION_RELATIVE, DAYS_EMPLOYED, DAYS_REGISTRATION,
+       DAYS_ID_PUBLISH,REG_CITY_NOT_LIVE_CITY,OBS_30_CNT_SOCIAL_CIRCLE,OBS_60_CNT_SOCIAL_CIRCLE,
+       FLAG_DOCUMENT_4, FLAG_DOCUMENT_5, FLAG_DOCUMENT_6, FLAG_DOCUMENT_7, FLAG_DOCUMENT_8, FLAG_DOCUMENT_9,
+       FLAG_DOCUMENT_10, FLAG_DOCUMENT_11, FLAG_DOCUMENT_13,FLAG_DOCUMENT_14,FLAG_DOCUMENT_17,
+       FLAG_DOCUMENT_20, FLAG_DOCUMENT_21, AMT_REQ_CREDIT_BUREAU_QRT,AMT_REQ_CREDIT_BUREAU_YEAR, AMT_ANNUITY_y,
+       NAME_CONTRACT_STATUS, DAYS_DECISION,SELLERPLACE_AREA, DAYS_FIRST_DUE, DAYS_LAST_DUE_1ST_VERSION,
+       NFLAG_INSURED_ON_APPROVAL,NAME_TYPE_SUITE_x,NAME_INCOME_TYPE_,NAME_HOUSING_TYPE_,
+       ORGANIZATION_TYPE_,NAME_CONTRACT_TYPE_y_,NAME_CASH_LOAN_PURPOSE_,NAME_PAYMENT_TYPE_,CODE_REJECT_REASON_,NAME_TYPE_SUITE_y_,
+       NAME_CLIENT_TYPE_,NAME_GOODS_CATEGORY_,NAME_PORTFOLIO_,NAME_PRODUCT_TYPE_,CHANNEL_TYPE_,NAME_SELLER_INDUSTRY_,
+       NAME_YIELD_GROUP_,PRODUCT_COMBINATION_)
+        target = lg_obj.get_riskanalytics()
+        return jsonify({"Result":f"Predicted target is {np.around(target[0],2)}"})
+    else:
+        data    = request.form 
+        print("User input data is >>>>>>",data)
+        SK_ID_CURR = int(data["SK_ID_CURR"]) 
+        NAME_CONTRACT_TYPE_x = data["NAME_CONTRACT_TYPE_x"]
+        CODE_GENDER = int(data["CODE_GENDER"]) 
+        FLAG_OWN_CAR = int(data["FLAG_OWN_CAR"]) 
+        FLAG_OWN_REALTY = int(data["FLAG_OWN_REALTY"]) 
+        CNT_CHILDREN = int(data["CNT_CHILDREN"]) 
+        AMT_INCOME_TOTAL = data["AMT_INCOME_TOTAL"] 
+        NAME_EDUCATION_TYPE = data["NAME_EDUCATION_TYPE"]
+        NAME_FAMILY_STATUS = data["NAME_FAMILY_STATUS"]
+        REGION_POPULATION_RELATIVE = data["REGION_POPULATION_RELATIVE"]
+        DAYS_EMPLOYED = data["DAYS_EMPLOYED"]
+        DAYS_REGISTRATION = data["DAYS_REGISTRATION"]
+        DAYS_ID_PUBLISH = int(data["DAYS_ID_PUBLISH"])
+        REG_CITY_NOT_LIVE_CITY = int(data["REG_CITY_NOT_LIVE_CITY"])
+        OBS_30_CNT_SOCIAL_CIRCLE = data["OBS_30_CNT_SOCIAL_CIRCLE"]
+        OBS_60_CNT_SOCIAL_CIRCLE = data["OBS_60_CNT_SOCIAL_CIRCLE"]
+        FLAG_DOCUMENT_4 = int(data["FLAG_DOCUMENT_4"])
+        FLAG_DOCUMENT_5 = int(data["FLAG_DOCUMENT_5"])
+        FLAG_DOCUMENT_6 = int(data["FLAG_DOCUMENT_6"])
+        FLAG_DOCUMENT_7 = int(data["FLAG_DOCUMENT_7"])
+        FLAG_DOCUMENT_8 = int(data["FLAG_DOCUMENT_8"])
+        FLAG_DOCUMENT_9 = int(data["FLAG_DOCUMENT_9"])
+        FLAG_DOCUMENT_10 = int(data["FLAG_DOCUMENT_10"])
+        FLAG_DOCUMENT_11 = int(data["FLAG_DOCUMENT_11"])
+        FLAG_DOCUMENT_13 = int(data["FLAG_DOCUMENT_13"])
+        FLAG_DOCUMENT_14 = int(data["FLAG_DOCUMENT_14"])
+        FLAG_DOCUMENT_17 = int(data["FLAG_DOCUMENT_17"])
+        FLAG_DOCUMENT_20 = int(data["FLAG_DOCUMENT_20"])
+        FLAG_DOCUMENT_21 = int(data["FLAG_DOCUMENT_21"])
+        AMT_REQ_CREDIT_BUREAU_QRT = data["AMT_REQ_CREDIT_BUREAU_QRT"]
+        AMT_REQ_CREDIT_BUREAU_YEAR =data["AMT_REQ_CREDIT_BUREAU_YEAR"]
+        AMT_ANNUITY_y = data["AMT_ANNUITY_y"]
+        NAME_CONTRACT_STATUS = data["NAME_CONTRACT_STATUS"]
+        DAYS_DECISION = int(data["DAYS_DECISION"])
+        SELLERPLACE_AREA = data["SELLERPLACE_AREA"] 
+        DAYS_FIRST_DUE = data['DAYS_FIRST_DUE']
+        DAYS_LAST_DUE_1ST_VERSION = data["DAYS_LAST_DUE_1ST_VERSION"]
+        NFLAG_INSURED_ON_APPROVAL = data["NFLAG_INSURED_ON_APPROVAL"]
+
+        lg_obj = RiskAnalytics(SK_ID_CURR, NAME_CONTRACT_TYPE_x, CODE_GENDER,
+                            FLAG_OWN_CAR, FLAG_OWN_REALTY, CNT_CHILDREN, AMT_INCOME_TOTAL,
+                            NAME_EDUCATION_TYPE, NAME_FAMILY_STATUS,
+                            REGION_POPULATION_RELATIVE, DAYS_EMPLOYED, DAYS_REGISTRATION,
+                            DAYS_ID_PUBLISH, REG_CITY_NOT_LIVE_CITY, OBS_30_CNT_SOCIAL_CIRCLE,
+                            OBS_60_CNT_SOCIAL_CIRCLE,FLAG_DOCUMENT_4, FLAG_DOCUMENT_5, FLAG_DOCUMENT_6,
+                            FLAG_DOCUMENT_7, FLAG_DOCUMENT_8, FLAG_DOCUMENT_9,
+                            FLAG_DOCUMENT_10, FLAG_DOCUMENT_11, FLAG_DOCUMENT_13,
+                            FLAG_DOCUMENT_14,FLAG_DOCUMENT_17, FLAG_DOCUMENT_20, FLAG_DOCUMENT_21, AMT_REQ_CREDIT_BUREAU_QRT,
+                            AMT_REQ_CREDIT_BUREAU_YEAR, AMT_ANNUITY_y, NAME_CONTRACT_STATUS, DAYS_DECISION,
+                            SELLERPLACE_AREA, DAYS_FIRST_DUE, DAYS_LAST_DUE_1ST_VERSION,
+                            NFLAG_INSURED_ON_APPROVAL)
+        target = lg_obj.get_predicted_target()
+        return jsonify({"Result":f"Predicted target is {np.around(target[0],2)}"})
+    
+
+if __name__=="__main__":
+     app.run(port=config.PORT_NUMBER)
+    
